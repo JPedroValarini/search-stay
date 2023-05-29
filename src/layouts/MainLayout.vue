@@ -35,6 +35,8 @@
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
+          clickable
+          :to="link.link"
         />
       </q-list>
     </q-drawer>
@@ -54,7 +56,7 @@ const linksList = [
     title: 'Home',
     caption: '',
     icon: 'home',
-    link: { name: 'home' }
+    link: '/'
   }
 ]
 

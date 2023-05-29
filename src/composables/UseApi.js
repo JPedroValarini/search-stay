@@ -1,10 +1,28 @@
 import { api } from 'boot/axios'
 
 export default function useApi (url) {
-  const list = async () => {
+  const list = async (page = 0) => {
+    try {
+      const { data } = await api.get(url, { params: { page } })
+      return data.data.entities
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const paginationData = async () => {
     try {
       const { data } = await api.get(url)
-      return data.data.entities
+      return data.data.pagination
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const getById = async (id) => {
+    try {
+      const { data } = await api.get(`${url}/${id}`)
+      return data
     } catch (error) {
       throw new Error(error)
     }
@@ -21,7 +39,7 @@ export default function useApi (url) {
 
   const update = async (form) => {
     try {
-      const { data } = await api.put(`${url}/${form.id}`, form)
+      const { data } = await api.put(`${url}/${form.house_rules.id}`, form)
       return data
     } catch (error) {
       throw new Error(error)
@@ -41,6 +59,8 @@ export default function useApi (url) {
     list,
     post,
     update,
-    remove
+    remove,
+    getById,
+    paginationData
   }
 }
