@@ -6,6 +6,7 @@
       :columns="columns"
       row-key="name"
       v-model:pagination="pagination"
+      @request="onRequest"
     >
 
     <template v-slot:top>
@@ -21,16 +22,6 @@
       </template>
     </q-table>
     <div class="row justify-center q-mt-md">
-      <q-pagination
-        v-model="pagination.page"
-        :max="pagination.totalPages"
-        :rows-per-page="pagination.rowsPerPage"
-        direction-links
-        flat
-        color="grey"
-        active-color="primary"
-      >
-      </q-pagination>
     </div>
   </q-page>
 </template>
@@ -45,13 +36,12 @@ export default defineComponent({
   name: 'IndexPage',
   setup () {
     const houseRules = ref([])
-    const { list, remove, paginationData } = houseRulesService()
+    const { list, remove } = houseRulesService()
     const router = useRouter()
     const pagination = ref({
       page: 1,
       rowsPerPage: 10,
-      totalPages: 4,
-      total: 0
+      rowsNumber: 0
     })
 
     const columns = [
@@ -66,25 +56,24 @@ export default defineComponent({
 
     onMounted(async () => {
       await getHouseRules(pagination.value.page)
-      await getPages()
     })
 
-    const getPages = async () => {
-      try {
-        const pages = await paginationData()
-        pagination.value.page = pages.current_page
-        pagination.value.rowsPerPage = pages.per_page
-        pagination.value.totalPages = pages.total_pages
-        pagination.value.total = pages.total
-      } catch (error) {
-        alert(error)
-      }
+    const onRequest = async (props) => {
+      console.log(props)
+      await getHouseRules(props.pagination.page)
     }
 
-    const getHouseRules = async (page = 1) => {
+    const getHouseRules = async (page = 0) => {
       try {
         const data = await list(page)
-        houseRules.value = data
+        houseRules.value = data.entities
+
+        pagination.value = {
+          page: data.pagination.current_page,
+          rowsPerPage: data.pagination.per_page,
+          totalPages: data.pagination.total_pages,
+          rowsNumber: data.pagination.total
+        }
       } catch (error) {
         alert(error)
       }
@@ -117,7 +106,7 @@ export default defineComponent({
       deleteHouseRules,
       editHouseRules,
       pagination,
-      getPages
+      onRequest
     }
   }
 })

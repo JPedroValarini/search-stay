@@ -1,19 +1,10 @@
 import { api } from 'boot/axios'
 
 export default function useApi (url) {
-  const list = async (page = 0) => {
+  const list = async (page) => {
     try {
       const { data } = await api.get(url, { params: { page } })
-      return data.data.entities
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
-  const paginationData = async () => {
-    try {
-      const { data } = await api.get(url)
-      return data.data.pagination
+      return data.data
     } catch (error) {
       throw new Error(error)
     }
@@ -60,7 +51,6 @@ export default function useApi (url) {
     post,
     update,
     remove,
-    getById,
-    paginationData
+    getById
   }
 }
