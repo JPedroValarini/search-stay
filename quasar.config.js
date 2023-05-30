@@ -60,14 +60,14 @@ module.exports = configure(function (ctx) {
         node: 'node16'
       },
 
-      vueRouterMode: 'history',
+      vueRouterMode: 'history'
 
-      env: {
-        API_URL: ctx.dev
-          ? 'https://sys-dev.searchandstay.com/api/admin/'
-          : 'https://sys-dev.searchandstay.com/api/admin/',
-        AUTH: process.env.AUTH_HEADER
-      }
+      // env: {
+      //   API_URL: ctx.dev
+      //     ? 'https://sys-dev.searchandstay.com/api/admin/'
+      //     : 'https://sys-dev.searchandstay.com/api/admin/',
+      //   AUTH: 'Bearer 40fe071962846075452a4f6123ae71697463cad20f51e237e2035b41af0513d8'
+      // }
 
       // available values: 'hash', 'history'
       // vueRouterBase,
@@ -103,6 +103,7 @@ module.exports = configure(function (ctx) {
     framework: {
       config: {},
 
+      mode: 'cordova',
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 
@@ -173,6 +174,7 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
     cordova: {
+      platforms: ['android']
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
     },
 
