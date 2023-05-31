@@ -4,8 +4,9 @@
       title="Treats"
       :rows="houseRules"
       :columns="columns"
-      row-key="name"
+      :loading="loading"
       v-model:pagination="pagination"
+      row-key="id"
       @request="onRequest"
     >
 
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import houseRulesService from 'src/services/houseRules'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
@@ -36,12 +37,14 @@ export default defineComponent({
   name: 'IndexPage',
   setup () {
     const houseRules = ref([])
+    const loading = ref(true)
     const { list, remove } = houseRulesService()
     const router = useRouter()
     const pagination = ref({
       page: 1,
       rowsPerPage: 10,
-      rowsNumber: 0
+      sortBy: 'id',
+      descending: true
     })
 
     const columns = [
@@ -59,7 +62,6 @@ export default defineComponent({
     })
 
     const onRequest = async (props) => {
-      console.log(props)
       await getHouseRules(props.pagination.page)
     }
 
@@ -76,6 +78,8 @@ export default defineComponent({
         }
       } catch (error) {
         alert(error)
+      } finally {
+        loading.value = false
       }
     }
 
@@ -102,11 +106,13 @@ export default defineComponent({
 
     return {
       houseRules,
+      loading,
       columns,
       deleteHouseRules,
       editHouseRules,
       pagination,
-      onRequest
+      onRequest,
+      pagesNumber: computed(() => Math.ceil(pagination.value.totalPages))
     }
   }
 })
